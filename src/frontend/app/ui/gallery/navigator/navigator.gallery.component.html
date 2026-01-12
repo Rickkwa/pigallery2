@@ -43,6 +43,13 @@
                 </a>
                 <div class="divider">&nbsp;</div>
             </ng-container>
+            <ng-container *ngIf="config.Gallery.NavBar.showMapButton">
+                <a (click)="triggerMapClick()"
+                   class="btn btn-outline-secondary btn-navigator">
+                    <ng-icon name="ionLocationOutline" title="Map" i18n-title></ng-icon>
+                </a>
+                <div class="divider">&nbsp;</div>
+            </ng-container>
             <ng-container *ngIf="ItemCount> 0">
                 <a class="btn btn-outline-secondary btn-navigator"
                    [class.btn-secondary]="filterService.activeFilters.value.areFiltersActive"

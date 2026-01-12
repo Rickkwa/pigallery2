@@ -897,6 +897,16 @@ export class NavBarConfig {
 
 
   @ConfigProperty({
+    tags: {
+      name: $localize`Show map button`,
+      priority: ConfigPriority.advanced,
+    },
+    description: $localize`Shows a dedicated map button on the navigation bar to open the map view.`,
+  })
+  showMapButton: boolean = false;
+
+
+  @ConfigProperty({
     type: NavBarSortingAndGroupingConfig,
     tags: {
       name: $localize`Sorting and grouping`,

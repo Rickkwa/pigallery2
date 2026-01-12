@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnChanges, ViewChild,} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {PhotoDTO} from '../../../../../common/entities/PhotoDTO';
 import {Dimension, IRenderable} from '../../../model/IRenderable';
 import {GalleryMapLightboxComponent} from './lightbox/lightbox.map.gallery.component';
@@ -12,6 +12,7 @@ import {MarkerFactory} from './MarkerFactory';
 import {LeafletModule} from '@bluehalo/ngx-leaflet';
 import {QueryService} from '../../../model/query.service';
 import {Router} from '@angular/router';
+import {MapStateService} from '../map-state.service';
 
 @Component({
   selector: 'app-gallery-map',
@@ -19,12 +20,14 @@ import {Router} from '@angular/router';
   styleUrls: ['./map.gallery.component.css'],
   imports: [GalleryMapLightboxComponent, LeafletModule]
 })
-export class GalleryMapComponent implements OnChanges, IRenderable {
+export class GalleryMapComponent implements OnChanges, IRenderable, OnInit {
   @Input() photos: PhotoDTO[];
   @Input() gpxFiles: FileDTO[];
   @ViewChild(GalleryMapLightboxComponent, {static: false})
   mapLightbox: GalleryMapLightboxComponent;
   @ViewChild('map', {static: false}) mapElement: ElementRef;
+
+  public readonly config = Config;
 
   leafletMap: Map;
   layers: { light: TileLayer, dark: TileLayer };
@@ -41,16 +44,25 @@ export class GalleryMapComponent implements OnChanges, IRenderable {
   };
   markerLayer: Marker[] = [];
   darkModeSubscription: Subscription;
+  mapClickSubscription: Subscription;
 
   constructor(public mapService: MapService,
               private queryService: QueryService,
               private router: Router,
-              private themeService: ThemeService) {
+              private themeService: ThemeService,
+              private mapStateService: MapStateService) {
     this.initThemeModes();
+  }
+
+  ngOnInit(): void {
+    this.mapClickSubscription = this.mapStateService.mapClicked.subscribe(() => {
+      this.click();
+    });
   }
 
   ngOnDestroy(): void {
     this.darkModeSubscription.unsubscribe();
+    this.mapClickSubscription.unsubscribe();
   }
 
   initThemeModes() {

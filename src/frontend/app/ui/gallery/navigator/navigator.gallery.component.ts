@@ -26,6 +26,7 @@ import { StringifySortingMethod } from '../../../pipes/StringifySortingMethod';
 import { StringifySearchQuery } from '../../../pipes/StringifySearchQuery';
 import { StringifyGridSize } from '../../../pipes/StringifyGridSize';
 import {ContentWrapperWithError} from '../../../../../common/entities/ContentWrapper';
+import {MapStateService} from '../map-state.service';
 
 @Component({
     selector: 'app-gallery-navbar',
@@ -79,7 +80,8 @@ export class GalleryNavigatorComponent {
       public sortingService: GallerySortingService,
       public navigatorService: GalleryNavigatorService,
       private router: Router,
-      public sanitizer: DomSanitizer
+      public sanitizer: DomSanitizer,
+      private mapStateService: MapStateService,
   ) {
     this.sortingByTypes = Utils.enumToArray(SortByTypes);
     // can't group by random
@@ -305,6 +307,10 @@ export class GalleryNavigatorComponent {
     this.router.navigate(['/gallery', this.parentPath],
         {queryParams: this.queryService.getParams()})
         .catch(console.error);
+  }
+
+  triggerMapClick(): void {
+    this.mapStateService.clickMap();
   }
 
   @HostListener('window:keydown', ['$event'])
